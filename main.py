@@ -13,6 +13,7 @@ screen_y = GetSystemMetrics(79)
 print(screen_x, screen_y)
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
+scan_On=False
 
 draw_cool_down = 1
 stop_draw_cool_down = 0.2
@@ -47,38 +48,47 @@ with mp_hands.Hands(
         # Draw the hand annotations on the image.
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+
         if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                mp_drawing.draw_landmarks(
-                        image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-            if results.multi_hand_landmarks[0].landmark[4]:
-                pos_x = results.multi_hand_landmarks[0].landmark[4].x * screen_x
-                pos_y = results.multi_hand_landmarks[0].landmark[4].y * screen_y
-                mouse.move(pos_x, pos_y, True)
+            if distance(results.multi_hand_landmarks[0].landmark[4],
+                        results.multi_hand_landmarks[0].landmark[16]) < 0.05:
+                if scan_On:
+                    scan_On=False
+                else:
+                    scan_On=True
+            if scan_On:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    mp_drawing.draw_landmarks(
+                            image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+                if results.multi_hand_landmarks[0].landmark[4]:
+                    pos_x = results.multi_hand_landmarks[0].landmark[4].x * screen_x
+                    pos_y = results.multi_hand_landmarks[0].landmark[4].y * screen_y
+                    mouse.move(pos_x, pos_y, True)
 
-            if distance(results.multi_hand_landmarks[0].landmark[8],
-                        results.multi_hand_landmarks[0].landmark[4]) < 0.05:
-                    mouse.press("left")
-                    left_down=True
-            elif left_down :
-                mouse.release("left")
-                left_down=False
+                if distance(results.multi_hand_landmarks[0].landmark[8],
+                            results.multi_hand_landmarks[0].landmark[4]) < 0.05:
+                        mouse.press("left")
+                        left_down=True
+                elif left_down :
+                    mouse.release("left")
+                    left_down=False
 
-            if distance(results.multi_hand_landmarks[0].landmark[20],
-                        results.multi_hand_landmarks[0].landmark[4]) < 0.05:
-                    mouse.press("right")
-                    right_down=True
-            elif right_down :
-                mouse.release("right")
-                right_down=False
+                if distance(results.multi_hand_landmarks[0].landmark[20],
+                            results.multi_hand_landmarks[0].landmark[4]) < 0.05:
+                        mouse.press("right")
+                        right_down=True
+                elif right_down :
+                    mouse.release("right")
+                    right_down=False
 
-            if distance(results.multi_hand_landmarks[0].landmark[0],
-                        results.multi_hand_landmarks[0].landmark[12]) < 0.15:
-                    mouse.wheel(-1)
+                if distance(results.multi_hand_landmarks[0].landmark[0],
+                            results.multi_hand_landmarks[0].landmark[12]) < 0.05:
+                        mouse.wheel(-1)
 
-            if distance(results.multi_hand_landmarks[0].landmark[0],
-                        results.multi_hand_landmarks[0].landmark[16]) < 0.15:
-                    mouse.wheel(+1)
+                if distance(results.multi_hand_landmarks[0].landmark[0],
+                            results.multi_hand_landmarks[0].landmark[16]) < 0.05:
+                        mouse.wheel(+1)
 
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
