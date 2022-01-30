@@ -6,6 +6,8 @@ import datetime
 import mouse
 from win32api import GetSystemMetrics
 
+left_down= False
+right_down=False
 screen_x = GetSystemMetrics(78)
 screen_y = GetSystemMetrics(79)
 print(screen_x, screen_y)
@@ -23,7 +25,7 @@ def distance(p1, p2):
     return math.sqrt(((p1.x - p2.x) ** 2) + ((p1.y - p2.y) ** 2))
 
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 with mp_hands.Hands(
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5) as hands:
@@ -46,7 +48,6 @@ with mp_hands.Hands(
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         if results.multi_hand_landmarks:
-            print(results.multi_hand_landmarks[0].landmark[4])
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(
                         image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
@@ -58,8 +59,18 @@ with mp_hands.Hands(
             if distance(results.multi_hand_landmarks[0].landmark[8],
                         results.multi_hand_landmarks[0].landmark[4]) < 0.05:
                     mouse.press("left")
-            else :
+                    left_down=True
+            elif left_down :
                 mouse.release("left")
+                left_down=False
+
+            if distance(results.multi_hand_landmarks[0].landmark[20],
+                        results.multi_hand_landmarks[0].landmark[4]) < 0.05:
+                    mouse.press("right")
+                    right_down=True
+            elif right_down :
+                mouse.release("right")
+                right_down=False
 
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
