@@ -72,8 +72,17 @@ with mp_hands.Hands(
                 mouse.release("right")
                 right_down=False
 
+            if distance(results.multi_hand_landmarks[0].landmark[0],
+                        results.multi_hand_landmarks[0].landmark[12]) < 0.15:
+                    mouse.wheel(-1)
+
+            if distance(results.multi_hand_landmarks[0].landmark[0],
+                        results.multi_hand_landmarks[0].landmark[16]) < 0.15:
+                    mouse.wheel(+1)
+
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
             break
+
 
 cap.release()
