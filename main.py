@@ -57,24 +57,9 @@ with mp_hands.Hands(
 
             if distance(results.multi_hand_landmarks[0].landmark[8],
                         results.multi_hand_landmarks[0].landmark[4]) < 0.05:
-                if not drawing and not draw_start:
-                    draw_start_t = datetime.datetime.today()
-                    draw_start = True
-                elif not drawing and draw_cool_down < (
-                        datetime.datetime.today() - draw_start_t).total_seconds() < draw_cool_down + 0.1:
-                    drawing = True
-                    draw_start = False
-                elif not drawing and (datetime.datetime.today() - draw_start_t).total_seconds() > draw_cool_down + 0.1:
-                    draw_start = False
-                elif drawing:
                     mouse.press("left")
-            elif drawing and not draw_stop:
-                draw_stop = True
-                draw_stop_t = datetime.datetime.now()
-            elif drawing and draw_stop and (
-                    datetime.datetime.today() - draw_stop_t).total_seconds() > stop_draw_cool_down:
-                drawing = False
-                draw_stop = False
+            else :
+                mouse.release("left")
 
         cv2.imshow('MediaPipe Hands', image)
         if cv2.waitKey(5) & 0xFF == 27:
