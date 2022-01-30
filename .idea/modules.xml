@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Mediapipe.iml" filepath="$PROJECT_DIR$/.idea/Mediapipe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mediapipe-Python.iml" filepath="$PROJECT_DIR$/.idea/Mediapipe-Python.iml" />
     </modules>
   </component>
 </project>
